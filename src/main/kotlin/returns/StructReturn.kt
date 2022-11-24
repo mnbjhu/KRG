@@ -1,3 +1,5 @@
+package returns
+
 import kotlin.reflect.KTypeProjection
 import kotlin.reflect.full.createType
 import kotlin.reflect.full.isSubtypeOf
@@ -24,11 +26,6 @@ abstract class StructReturn<T>: DataType<T>(){
     abstract fun ReturnScope.decode(): T
     operator fun <T, U: ReturnValue<T>>U.get(value: T): U{
         return encode(value) as U
-    }
-    class ReturnScope(private val map: Map<ReturnValue<*>, *>) {
-        fun <T, U: ReturnValue<T>>U.result(): T{
-            return map[this] as T
-        }
     }
 }
 

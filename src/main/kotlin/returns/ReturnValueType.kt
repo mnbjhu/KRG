@@ -1,4 +1,4 @@
-
+package returns
 sealed class ReturnValueType{
     object Instance: ReturnValueType()
     object ParserOnly: ReturnValueType()

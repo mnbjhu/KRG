@@ -12,6 +12,7 @@ repositories {
 }
 
 dependencies {
+    api("redis.clients:jedis:4.3.1")
     testImplementation(kotlin("test"))
     implementation(kotlin("reflect"))
     testImplementation ("org.amshove.kluent:kluent:1.72")

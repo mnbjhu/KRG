@@ -1,11 +1,11 @@
-import kotlin.reflect.KClass
-import kotlin.reflect.KFunction
+package returns
+
 import kotlin.reflect.KType
 
 class ArrayReturn<T, U: ReturnValue<T>>(private val values: Box<List<U>>, private val inner: KType): DataType<List<T>>() {
     override fun getStructuredString(): String {
         return when(values){
-            is Box.WithoutValue -> throw Exception("ArrayReturn cannot getStructuredString with out values set")
+            is Box.WithoutValue -> throw Exception("return_types.ArrayReturn cannot getStructuredString with out values set")
             is Box.WithValue -> values.value.joinToString(prefix = "[", postfix = "]") { it.getString() }
         }
     }

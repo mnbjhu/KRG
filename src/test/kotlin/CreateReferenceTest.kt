@@ -1,10 +1,26 @@
-import PrimitiveReturn.StringReturn
+import core.QueryScope
+import returns.StringReturn
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should be instance of`
 import org.junit.jupiter.api.Test
+import returns.*
+import returns.Node.Companion.minus
+import statements.Matchable.Companion.match
 import kotlin.reflect.KTypeProjection
 import kotlin.reflect.KVariance
 import kotlin.reflect.full.createType
+
+
+class TestNode(val myString: Nullable<String, StringReturn>): Node<Unit>(){
+    override fun ReturnScope.decode() {
+        return Unit
+    }
+}
+class HasOther: Relation<TestNode, TestNode, Unit>() {
+    override fun ReturnScope.decode() {
+        TODO("Not yet implemented")
+    }
+}
 
 class NestedReturn(val test: Nullable<String?, TestReturn>): StructReturn<String?>() {
     override fun encode(value: String?) = NestedReturn(test[value])
@@ -70,6 +86,12 @@ class CreateReferenceTest {
     }
     @Test
     fun `Create node reference`(){
-
+        with(QueryScope()){
+            val first = createReference(::TestNode, "some_ref")
+            val (node, _, other) = match(first - ::HasOther - first)
+            println(node.getString())
+            println(node.myString.getString())
+        }
     }
 }
+

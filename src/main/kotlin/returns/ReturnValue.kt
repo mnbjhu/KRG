@@ -1,15 +1,13 @@
+package returns
+
 import kotlin.reflect.*
 import kotlin.reflect.full.createType
 import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.primaryConstructor
 
-fun main(){
-    //val myRef = ::TestReturn.createReference("test")
-    //val nestedRef  = ::NestedReturn.createReference("test2")
-}
 
 sealed class ReturnValue<T>{
-    var type: ReturnValueType = ReturnValueType.Instance
+    internal var type: ReturnValueType = ReturnValueType.Instance
     fun getString() = when(type){
         is ReturnValueType.ParserOnly -> throw Exception("Cannot call getString, instance is parser only")
         is ReturnValueType.Reference -> (type as ReturnValueType.Reference).ref
@@ -19,33 +17,6 @@ sealed class ReturnValue<T>{
     abstract fun parse(value: Any?): T
     abstract fun encode(value: T): ReturnValue<T>
 }
-
-class Nullable<T, U: ReturnValue<T>>(private val value: Box<U>, private val inner: KType): ReturnValue<T?>() {
-    private val dummy = createDummy(inner) as U
-    override fun getStructuredString() = when(value){
-        is Box.WithoutValue -> "NULL"
-        is Box.WithValue -> value.value.getString()
-    }
-    override fun parse(value: Any?): T? {
-        return if (value != null) dummy.parse(value)
-        else null
-    }
-    override fun encode(value: T?): Nullable<T, U> {
-        return if (value == null) Nullable(Box.WithoutValue, inner)
-        else Nullable(Box.WithValue(dummy.encode(value) as U), inner)
-    }
-}
-sealed class NotNull<T>: ReturnValue<T>()
-sealed class DataType<T>: NotNull<T>()
-sealed class Entity<T>: NotNull<T>()
-sealed class Node<T>: Entity<T>()
-sealed class Relation<A: Node<*>, B: Node<*>, T>(val from: A, val to: B): Entity<T>()
-sealed class Box<out T>{
-    class WithValue<T>(val value: T): Box<T>()
-    object WithoutValue: Box<Nothing>()
-}
-
-class ArrayType<T, U: ReturnValue<T>>(val type: KType)
 
 fun <T, U: ReturnValue<T>>array(inner: KFunction<U>): ArrayType<T, U> {
     return ArrayType(ArrayReturn::class.createType(listOf(KTypeProjection(KVariance.INVARIANT, inner.returnType))))
@@ -75,6 +46,18 @@ fun createDummy(type: KType): Any{
             }
             (constructor.callBy(params) as ReturnValue<*>).apply { this.type = ReturnValueType.ParserOnly }
         }
+        type.isSubtypeOf(Entity::class.createType(listOf(KTypeProjection.STAR))) -> {
+            val constructor = (type.classifier as KClass<*>).primaryConstructor!!
+            val params = constructor.parameters.associateWith {
+                if(!it.type.isSubtypeOf(NotNull::class.createType(listOf(KTypeProjection.STAR))) &&
+                    !it.type.isSubtypeOf(Nullable::class.createType(listOf(
+                        KTypeProjection.STAR,
+                        KTypeProjection(KVariance.OUT, NotNull::class.createType(listOf(KTypeProjection.STAR)))))))
+                    throw Exception("Attributes can only be return_types.NotNull or return_types.Nullable<return_types.NotNull>")
+                createDummy(it.type)
+            }
+            (constructor.callBy(params) as ReturnValue<*>).apply { this.type = ReturnValueType.ParserOnly }
+        }
         type.isSubtypeOf(Nullable::class.createType(listOf(KTypeProjection.STAR, KTypeProjection.STAR)), ) -> {
             Nullable<Any, ReturnValue<Any>>(Box.WithoutValue, type.arguments[1].type!!)
                 .apply { this.type = ReturnValueType.ParserOnly }
@@ -96,17 +79,17 @@ fun createReference(type: KType, ref: String): Any{
             val params = constructor.parameters.associateWith {
                 if(!it.type.isSubtypeOf(NotNull::class.createType(listOf(KTypeProjection.STAR))) &&
                     !it.type.isSubtypeOf(Nullable::class.createType(listOf(KTypeProjection.STAR, KTypeProjection(KVariance.INVARIANT, NotNull::class.createType(listOf(KTypeProjection.STAR)))))))
-                    throw Exception("Attributes can only be NotNull or Nullable<NotNull>")
+                    throw Exception("Attributes can only be return_types.NotNull or return_types.Nullable<return_types.NotNull>")
                 createReference(it.type, ref + "." + it.name)
             }
             (constructor.callBy(params) as ReturnValue<*>).apply { this.type = ReturnValueType.Reference(ref) }
         }
-        type.isSubtypeOf(Node::class.createType(listOf(KTypeProjection.STAR))) -> {
+        type.isSubtypeOf(Entity::class.createType(listOf(KTypeProjection.STAR))) -> {
             val constructor = (type.classifier as KClass<*>).primaryConstructor!!
             val params = constructor.parameters.associateWith {
                 if(!it.type.isSubtypeOf(NotNull::class.createType(listOf(KTypeProjection.STAR))) &&
-                    !it.type.isSubtypeOf(Nullable::class.createType(listOf(KTypeProjection.STAR, KTypeProjection(KVariance.INVARIANT, NotNull::class.createType(listOf(KTypeProjection.STAR)))))))
-                    throw Exception("Attributes can only be NotNull or Nullable<NotNull>")
+                    !it.type.isSubtypeOf(Nullable::class.createType(listOf(KTypeProjection.STAR, KTypeProjection(KVariance.OUT, NotNull::class.createType(listOf(KTypeProjection.STAR)))))))
+                    throw Exception("Attributes can only be return_types.NotNull or return_types.Nullable<return_types.NotNull>")
                 createReference(it.type, ref + "." + it.name)
             }
             (constructor.callBy(params) as ReturnValue<*>).apply { this.type = ReturnValueType.Reference(ref) }
@@ -122,6 +105,7 @@ fun createReference(type: KType, ref: String): Any{
         else -> throw Exception()
     }
 }
+
 fun <T, U: ReturnValue<T>>createDummy(type: KFunction<U>): U{
     return createDummy(type.returnType) as U
 }
@@ -133,3 +117,7 @@ fun <T, U: ReturnValue<T>>createInstance(type: KFunction<U>, value: T): U{
     return dummy.encode(value) as U
 }
 
+fun <T, U: ReturnValue<T>>createInstance(type: KType, value: T): U{
+    val dummy = createDummy(type) as U
+    return dummy.encode(value) as U
+}
