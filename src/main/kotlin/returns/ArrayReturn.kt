@@ -9,7 +9,6 @@ class ArrayReturn<T, U: ReturnValue<T>>(private val values: Box<List<U>>, privat
             is Box.WithValue -> values.value.joinToString(prefix = "[", postfix = "]") { it.getString() }
         }
     }
-
     override fun parse(value: Any?): List<T> {
         val dummy = createDummy(inner) as U
         return (value as List<*>).map { dummy.parse(it) }
