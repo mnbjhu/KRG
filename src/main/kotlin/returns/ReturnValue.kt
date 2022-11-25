@@ -1,5 +1,8 @@
 package returns
 
+import returns.util.ArrayType
+import returns.util.Box
+import returns.util.ReturnValueType
 import kotlin.reflect.*
 import kotlin.reflect.full.createType
 import kotlin.reflect.full.isSubtypeOf

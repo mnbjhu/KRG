@@ -1,5 +1,6 @@
 package returns
 
+import returns.util.Box
 import kotlin.reflect.KType
 
 class Nullable<T, U: ReturnValue<T>>(private val value: Box<U>, private val inner: KType): ReturnValue<T?>() {

@@ -1,5 +1,6 @@
-package returns
+package returns.util
 
+import returns.Node
 import statements.Searchable
 
 class NodeReference<U: Node<*>>(private val node: U) : Searchable<U> {

@@ -1,5 +1,6 @@
 package returns
 
+import returns.util.Box
 import kotlin.reflect.KType
 
 class ArrayReturn<T, U: ReturnValue<T>>(private val values: Box<List<U>>, private val inner: KType): DataType<List<T>>() {

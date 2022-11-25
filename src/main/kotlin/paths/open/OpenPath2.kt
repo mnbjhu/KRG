@@ -3,10 +3,9 @@ package paths.open
 import core.NameCounter
 import core.NodeParamMap
 import core.RelationParamMap
-import core.invoke
 import paths.closed.MatchablePath2
 import returns.Node
-import returns.NodeReference
+import returns.util.NodeReference
 import returns.Relation
 import statements.Searchable
 import kotlin.reflect.KFunction

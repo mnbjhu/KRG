@@ -1,5 +1,6 @@
 package returns
 
+import returns.util.ReturnScope
 import kotlin.reflect.KTypeProjection
 import kotlin.reflect.full.createType
 import kotlin.reflect.full.isSubtypeOf

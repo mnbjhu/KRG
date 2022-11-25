@@ -3,6 +3,7 @@ package returns
 import core.RelationParamMap
 import core.invoke
 import paths.open.OpenPath2
+import returns.util.NodeReference
 import kotlin.reflect.KFunction
 
 abstract class Node<T>: Entity<T>(){

@@ -1,11 +1,17 @@
 import core.QueryScope
+import core.invoke
 import returns.StringReturn
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should be instance of`
 import org.junit.jupiter.api.Test
 import returns.*
 import returns.Node.Companion.minus
+import returns.util.ReturnScope
+import returns.util.ReturnValueType
+import statements.Creatable.Companion.create
+import statements.Delete.Companion.delete
 import statements.Matchable.Companion.match
+import statements.Set.Companion.set
 import kotlin.reflect.KTypeProjection
 import kotlin.reflect.KVariance
 import kotlin.reflect.full.createType
@@ -88,9 +94,16 @@ class CreateReferenceTest {
     fun `Create node reference`(){
         with(QueryScope()){
             val first = createReference(::TestNode, "some_ref")
-            val (node, _, other) = match(first - ::HasOther - first)
+            val (node) = match(first - ::HasOther - first)
+            val node2 = create(::TestNode{ it[::myString] = "some string" })
+            create(node2 - ::HasOther - ::TestNode{ it[::myString] = "other string" })
             println(node.getString())
             println(node.myString.getString())
+            delete(node, node2)
+            set {
+                node.myString to "Some String"
+                node2.myString to "Other String"
+            }
         }
     }
 }

@@ -1,5 +1,7 @@
 package returns
 
+import returns.util.Box
+
 sealed class PrimitiveReturn<T>(private val value: Box<T>): DataType<T>(){
     protected open fun getPrimitiveString(from: T) = "$from"
     override fun getStructuredString() = when(value){
