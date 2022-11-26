@@ -3,6 +3,7 @@ package core
 import redis.clients.jedis.HostAndPort
 import redis.clients.jedis.Jedis
 import redis.clients.jedis.UnifiedJedis
+import returns.EmptyReturn
 import returns.EmptyReturnInstance
 import returns.ReturnValue
 
@@ -26,12 +27,12 @@ class RedisGraph(
         val scope = QueryScope()
         val result = scope.queryBuilder()
         val builtQuery = scope.getString()
-        return if(result == EmptyReturnInstance){
+        return if(result is EmptyReturn){
             client.graphQuery(name, builtQuery)
             emptyList()
         } else {
             val response = client.graphQuery(name, "$builtQuery RETURN ${result.getString()}")
-            response.map { result.parse(it) }
+            response.map { result.parse(it.values().first()) }
         }
     }
 }

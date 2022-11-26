@@ -1,13 +1,15 @@
+package e2e
+
+import TestAuth
+import core.NodeParamMap.Companion.minus
 import core.RedisGraph
 import core.invoke
-import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.`should contain`
+import org.amshove.kluent.shouldContainSame
 import org.junit.jupiter.api.Test
 import returns.*
 import statements.Creatable.Companion.create
 import statements.Delete.Companion.delete
 import statements.Matchable.Companion.match
-import kotlin.concurrent.timer
 
 
 class Actor(val name: StringReturn): UnitNode()
@@ -20,7 +22,7 @@ class Movie(
 
 class MoviesExample {
     private val moviesGraph = RedisGraph(
-        name = "movies",
+        name = "movies_new",
         host = TestAuth.host,
         port = TestAuth.port,
         password = TestAuth.password
@@ -51,6 +53,10 @@ class MoviesExample {
             create(::Actor{ it[::name] = "Carrie Fisher" } - ::ActedIn{ it[::role] = "Princess Leia" } - movie)
             create(::Actor{ it[::name] = "Harrison Ford" } -::ActedIn{ it[::role] = "Han Solo" } - movie)
         }
-    }
 
+        moviesGraph.query {
+            val (actor) = match(::Actor - ::ActedIn - ::Movie{it[::title] = "Star Wars: Episode V - The Empire Strikes Back"})
+            actor.name
+        } shouldContainSame listOf("Mark Hamill", "Carrie Fisher", "Harrison Ford")
+    }
 }
