@@ -3,7 +3,7 @@ package paths.open
 import core.NameCounter
 import core.NodeParamMap
 import core.RelationParamMap
-import paths.closed.MatchablePath2
+import paths.matchable.MatchablePath2
 import returns.Node
 import returns.util.NodeReference
 import returns.Relation

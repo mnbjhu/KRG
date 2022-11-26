@@ -62,7 +62,7 @@ fun createDummy(type: KType): Any{
             (constructor.callBy(params) as ReturnValue<*>).apply { this.type = ReturnValueType.ParserOnly }
         }
         type.isSubtypeOf(Nullable::class.createType(listOf(KTypeProjection.STAR, KTypeProjection.STAR)), ) -> {
-            Nullable<Any, ReturnValue<Any>>(Box.WithoutValue, type.arguments[1].type!!)
+            Nullable<Any, NotNull<Any>>(Box.WithoutValue, type.arguments[1].type!!)
                 .apply { this.type = ReturnValueType.ParserOnly }
         }
         type.isSubtypeOf(PrimitiveReturn::class.createType(listOf(KTypeProjection.STAR))) -> {
@@ -98,7 +98,7 @@ fun createReference(type: KType, ref: String): Any{
             (constructor.callBy(params) as ReturnValue<*>).apply { this.type = ReturnValueType.Reference(ref) }
         }
         type.isSubtypeOf(Nullable::class.createType(listOf(KTypeProjection.STAR, KTypeProjection.STAR)), ) -> {
-            Nullable<Any, ReturnValue<Any>>(Box.WithoutValue, type.arguments[1].type!!)
+            Nullable<Any, NotNull<Any>>(Box.WithoutValue, type.arguments[1].type!!)
                 .apply { this.type = ReturnValueType.Reference(ref) }
         }
         type.isSubtypeOf(PrimitiveReturn::class.createType(listOf(KTypeProjection.STAR))) -> {

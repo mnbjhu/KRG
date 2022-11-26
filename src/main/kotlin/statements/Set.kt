@@ -3,7 +3,6 @@ package statements
 import core.QueryScope
 import returns.EmptyReturn
 import returns.ReturnValue
-import returns.createInstance
 
 class Set(private val map: SetMap): Statement() {
     override fun getString(): String {
@@ -17,14 +16,8 @@ class Set(private val map: SetMap): Statement() {
             return EmptyReturn
         }
     }
-
-}
-class SetMap(internal val params: MutableMap<ReturnValue<*>, ReturnValue<*>> = mutableMapOf()){
-    infix fun <T, U: ReturnValue<T>>U.to(value: T){
-        params[this] = encode(value)
+    class SetMap(internal val params: MutableMap<ReturnValue<*>, ReturnValue<*>> = mutableMapOf()){
+        infix fun <T, U: ReturnValue<T>>U.to(value: T) { params[this] = encode(value) }
+        infix fun <T, U: ReturnValue<T>>U.to(value: U) { params[this] = value }
     }
-    infix fun <T, U: ReturnValue<T>>U.to(value: U){
-        params[this] = value
-    }
-
 }

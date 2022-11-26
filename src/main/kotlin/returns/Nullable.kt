@@ -3,7 +3,7 @@ package returns
 import returns.util.Box
 import kotlin.reflect.KType
 
-class Nullable<T, U: ReturnValue<T>>(private val value: Box<U>, private val inner: KType): ReturnValue<T?>() {
+class Nullable<T, U: NotNull<T>>(private val value: Box<U>, private val inner: KType): ReturnValue<T?>() {
     private val dummy = createDummy(inner) as U
     override fun getStructuredString() = when(value){
         is Box.WithoutValue -> "NULL"

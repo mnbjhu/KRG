@@ -8,4 +8,7 @@ class QueryScope {
         println(statement.getString())
         statements.add(statement)
     }
+
+    fun getString() =statements.joinToString(" ")
+
 }
