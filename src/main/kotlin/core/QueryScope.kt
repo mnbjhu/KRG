@@ -9,6 +9,6 @@ class QueryScope {
         statements.add(statement)
     }
 
-    fun getString() =statements.joinToString(" ")
+    fun getString() = statements.joinToString(" "){it.getString()}
 
 }

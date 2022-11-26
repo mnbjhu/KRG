@@ -67,7 +67,7 @@ fun createDummy(type: KType): Any{
         }
         type.isSubtypeOf(PrimitiveReturn::class.createType(listOf(KTypeProjection.STAR))) -> {
             val constructor = (type.classifier as KClass<*>).primaryConstructor!!
-            (constructor.call(Box.WithoutValue) as ReturnValue<*>).apply { this.type = ReturnValueType.ParserOnly }
+            (constructor.call(null) as ReturnValue<*>).apply { this.type = ReturnValueType.ParserOnly }
         }
         else -> throw Exception()
     }
@@ -81,7 +81,7 @@ fun createReference(type: KType, ref: String): Any{
             val constructor = (type.classifier as KClass<*>).primaryConstructor!!
             val params = constructor.parameters.associateWith {
                 if(!it.type.isSubtypeOf(NotNull::class.createType(listOf(KTypeProjection.STAR))) &&
-                    !it.type.isSubtypeOf(Nullable::class.createType(listOf(KTypeProjection.STAR, KTypeProjection(KVariance.INVARIANT, NotNull::class.createType(listOf(KTypeProjection.STAR)))))))
+                    !it.type.isSubtypeOf(Nullable::class.createType(listOf(KTypeProjection.STAR, KTypeProjection(KVariance.OUT, NotNull::class.createType(listOf(KTypeProjection.STAR)))))))
                     throw Exception("Attributes can only be return_types.NotNull or return_types.Nullable<return_types.NotNull>")
                 createReference(it.type, ref + "." + it.name)
             }
@@ -103,7 +103,7 @@ fun createReference(type: KType, ref: String): Any{
         }
         type.isSubtypeOf(PrimitiveReturn::class.createType(listOf(KTypeProjection.STAR))) -> {
             val constructor = (type.classifier as KClass<*>).primaryConstructor!!
-            (constructor.call(Box.WithoutValue) as ReturnValue<*>).apply { this.type = ReturnValueType.Reference(ref) }
+            (constructor.call(null) as ReturnValue<*>).apply { this.type = ReturnValueType.Reference(ref) }
         }
         else -> throw Exception()
     }

@@ -2,30 +2,29 @@ package returns
 
 import returns.util.Box
 
-sealed class PrimitiveReturn<T>(private val value: Box<T>): DataType<T>(){
+sealed class PrimitiveReturn<T>(private val value: T?): DataType<T>(){
     protected open fun getPrimitiveString(from: T) = "$from"
     override fun getStructuredString() = when(value){
-        is Box.WithoutValue -> throw Exception("return_types.PrimitiveReturn cannot getStructuredString with out value set")
-        is Box.WithValue -> getPrimitiveString(value.value)
+        null -> throw Exception("return_types.PrimitiveReturn cannot getStructuredString with out value set")
+        else -> getPrimitiveString(value)
     }
     override fun parse(value: Any?): T {
         return value as T
     }
 }
-class StringReturn(value: Box<String>): PrimitiveReturn<String>(value) {
+class StringReturn(value: String?): PrimitiveReturn<String>(value) {
     override fun getPrimitiveString(from: String): String = "'$from'"
-    override fun encode(value: String) = StringReturn(Box.WithValue(value))
+    override fun encode(value: String) = StringReturn(value)
 }
-class BooleanReturn(value: Box<Boolean>): PrimitiveReturn<Boolean>(value) {
-    override fun encode(value: Boolean) = BooleanReturn(Box.WithValue(value))
+class LongReturn(value: Long?): PrimitiveReturn<Long>(value) {
+    override fun getPrimitiveString(from: Long): String = "'$from'"
+    override fun encode(value: Long) = LongReturn(value)
 }
-class DoubleReturn(value: Box<Double>): PrimitiveReturn<Double>(value) {
-    override fun encode(value: Double) = DoubleReturn(Box.WithValue(value))
+class DoubleReturn(value: Double?): PrimitiveReturn<Double>(value) {
+    override fun getPrimitiveString(from: Double): String = "'$from'"
+    override fun encode(value: Double) = DoubleReturn(value)
 }
-class LongReturn(value: Box<Long>): PrimitiveReturn<Long>(value) {
-    override fun encode(value: Long) = LongReturn(Box.WithValue(value))
-}
-
-sealed class GeoLocation{
-
+class BooleanReturn(value: Boolean?): PrimitiveReturn<Boolean>(value) {
+    override fun getPrimitiveString(from: Boolean): String = "'$from'"
+    override fun encode(value: Boolean) = BooleanReturn(value)
 }

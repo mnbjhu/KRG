@@ -1,6 +1,7 @@
 package returns
 
-object EmptyReturn: ReturnValue<Unit>() {
+object EmptyReturnInstance: EmptyReturn()
+abstract class EmptyReturn: ReturnValue<Unit>() {
     override fun getStructuredString(): String {
         throw Exception("Return is empty")
     }

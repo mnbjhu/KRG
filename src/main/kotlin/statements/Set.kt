@@ -1,7 +1,7 @@
 package statements
 
 import core.QueryScope
-import returns.EmptyReturn
+import returns.EmptyReturnInstance
 import returns.ReturnValue
 
 class Set(private val map: SetMap): Statement() {
@@ -9,11 +9,11 @@ class Set(private val map: SetMap): Statement() {
         return map.params.entries.joinToString(prefix = "SET ") { "${it.key.getString()} = ${it.value.getString()}" }
     }
     companion object{
-        fun QueryScope.set(setScope: SetMap.() -> Unit): EmptyReturn{
+        fun QueryScope.set(setScope: SetMap.() -> Unit): EmptyReturnInstance{
             val map = SetMap()
             map.setScope()
             addStatement(Set(map))
-            return EmptyReturn
+            return EmptyReturnInstance
         }
     }
     class SetMap(internal val params: MutableMap<ReturnValue<*>, ReturnValue<*>> = mutableMapOf()){

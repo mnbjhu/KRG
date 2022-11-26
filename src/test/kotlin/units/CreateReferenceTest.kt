@@ -1,5 +1,7 @@
 import core.QueryScope
 import core.invoke
+import core.nullable
+import core.of
 import returns.StringReturn
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should be instance of`
@@ -41,35 +43,6 @@ class TestReturn(val myString: Nullable<String, StringReturn>): StructReturn<Str
 
 class CreateReferenceTest {
     @Test
-    fun createDummy(){
-        val string = createDummy(StringReturn::class.createType()) as StringReturn
-        val arr = createDummy(
-            ArrayReturn::class.createType(
-                listOf(
-                    KTypeProjection(KVariance.INVARIANT, String::class.createType()),
-                    KTypeProjection(KVariance.INVARIANT, StringReturn::class.createType())
-                )
-            )
-        )
-        val struct = createDummy(TestReturn::class.createType())
-        val arr2 = createDummy(
-            ArrayReturn::class.createType(
-                listOf(
-                    KTypeProjection(KVariance.INVARIANT, String::class.createType()),
-                    KTypeProjection(KVariance.INVARIANT, TestReturn::class.createType())
-                )
-            )
-        )
-        val arr3 = createDummy(
-            ArrayReturn::class.createType(
-                listOf(
-                    KTypeProjection(KVariance.INVARIANT, String::class.createType()),
-                    KTypeProjection(KVariance.INVARIANT, NestedReturn::class.createType())
-                )
-            )
-        )
-    }
-    @Test
     fun `Create Reference`(){
         createReference(::TestReturn, "TestRef").also {
             it.type `should be instance of` ReturnValueType.Reference::class
@@ -84,10 +57,21 @@ class CreateReferenceTest {
         instance.getString() `should be equal to` "{myString: 'TestCreate'}"
     }
     @Test
-    fun `Create Null Instance`(){
+    fun `Create Null Attribute Instance`(){
         val instance = createInstance(::TestReturn, null)
         instance.type `should be instance of` ReturnValueType.Instance::class
+        instance.getString() `should be equal to` "{myString: NULL}"
+
+    }
+    @Test
+    fun `Create Null Instance`(){
+        val instance = nullable(::StringReturn) of null
         instance.getString() `should be equal to` "NULL"
+    }
+    @Test
+    fun `Create not-null instance`(){
+        val instance = nullable(::StringReturn) of "Hello"
+        instance.getString() `should be equal to` "'Hello'"
 
     }
     @Test

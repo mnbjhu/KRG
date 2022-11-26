@@ -13,9 +13,10 @@ repositories {
 
 dependencies {
     api("redis.clients:jedis:4.3.1")
-    testImplementation(kotlin("test"))
-    implementation(kotlin("reflect"))
-    testImplementation ("org.amshove.kluent:kluent:1.72")
+    api(kotlin("reflect"))
+    testApi("com.natpryce:konfig:1.6.10.0")
+    testApi(kotlin("test"))
+    testApi("org.amshove.kluent:kluent:1.72")
 
 }
 

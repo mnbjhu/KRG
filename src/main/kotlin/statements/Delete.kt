@@ -1,7 +1,7 @@
 package statements
 
 import core.QueryScope
-import returns.EmptyReturn
+import returns.EmptyReturnInstance
 import returns.Entity
 
 class Delete(private val toDelete: List<Entity<*>>): Statement() {
@@ -9,6 +9,6 @@ class Delete(private val toDelete: List<Entity<*>>): Statement() {
         return "DELETE ${toDelete.joinToString { it.getString() }}"
     }
     companion object{
-        fun QueryScope.delete(vararg toDelete: Entity<*>) = EmptyReturn.also { addStatement(Delete(toDelete.toList())) }
+        fun QueryScope.delete(vararg toDelete: Entity<*>) = EmptyReturnInstance.also { addStatement(Delete(toDelete.toList())) }
     }
 }

@@ -8,6 +8,11 @@ interface Matchable<T>: Searchable<T>{
             addStatement(Match(matchable))
             return matchable.getReference()
         }
+        fun <T, U : Matchable<T>, A, B : Matchable<A>>QueryScope.match(first: U, second: B): Pair<T, A>{
+            addStatement(Match(first, second))
+            return first.getReference() to second.getReference()
+        }
+
     }
 }
 interface Searchable<T>{
@@ -16,6 +21,6 @@ interface Searchable<T>{
     fun getSearchString(): String
 
 }
-class Match(private val matchable: Matchable<*>): Statement(){
-    override fun getString() = "MATCH ${matchable.getSearchString()}"
+class Match(private vararg val matchable: Matchable<*>): Statement(){
+    override fun getString() = "MATCH ${matchable.joinToString { it.getSearchString() }}"
 }
