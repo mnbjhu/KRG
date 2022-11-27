@@ -3,7 +3,7 @@ package core
 import paths.open.OpenPath2
 import returns.Node
 import returns.Relation
-import returns.createReference
+import returns.ReturnValue.Companion.createReference
 import statements.Creatable
 import statements.Matchable
 import kotlin.reflect.KClass

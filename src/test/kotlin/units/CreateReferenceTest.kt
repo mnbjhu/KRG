@@ -7,6 +7,8 @@ import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should be instance of`
 import org.junit.jupiter.api.Test
 import returns.*
+import returns.ReturnValue.Companion.createReference
+import returns.ReturnValue.Companion.createInstance
 import returns.Node.Companion.minus
 import returns.util.ReturnScope
 import returns.util.ReturnValueType
@@ -14,9 +16,7 @@ import statements.Creatable.Companion.create
 import statements.Delete.Companion.delete
 import statements.Matchable.Companion.match
 import statements.Set.Companion.set
-import kotlin.reflect.KTypeProjection
-import kotlin.reflect.KVariance
-import kotlin.reflect.full.createType
+
 
 
 class TestNode(val myString: Nullable<String, StringReturn>): Node<Unit>(){

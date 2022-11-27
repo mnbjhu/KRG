@@ -13,6 +13,10 @@ import kotlin.reflect.full.primaryConstructor
  *
  * A value which can be returned from a graph query: [core.RedisGraph.query].
  * i.e. RETURN myValue
+ *
+ * Return values should be created as:
+ * - A reference
+ * - Structured representations
  * @param T Return value type.
  */
 sealed class ReturnValue<T>{
@@ -21,7 +25,7 @@ sealed class ReturnValue<T>{
     /**
      * Get string
      *
-     * The string representation of the return value
+     * The string representation of the return value.
      * E.g
      * - obj1.myVar
      * - {myString:'Some String', myInt: 123}
@@ -35,23 +39,28 @@ sealed class ReturnValue<T>{
     /**
      * Get structured string
      *
-     * @return
+     * e.g. {x: 1.0, y: 2.0}
+     * @return The string representation of a structured return value.
      */
     abstract fun getStructuredString(): String
 
     /**
      * Parse
      *
-     * @param value
-     * @return
+     * Parses the un-typed data to the returned value
+     *
+     * @param value Un-typed response data
+     * @return decoded return value
      */
     abstract fun parse(value: Any?): T
 
     /**
      * Encode
      *
-     * @param value
-     * @return
+     * Creates a structured instance of [value].
+     *
+     * @param value the value to encode
+     * @return [value] as a [ReturnValue]
      */
     abstract fun encode(value: T): ReturnValue<T>
     companion object{

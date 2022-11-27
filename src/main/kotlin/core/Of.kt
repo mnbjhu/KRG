@@ -3,7 +3,7 @@ package core
 import returns.NotNull
 import returns.Nullable
 import returns.ReturnValue
-import returns.createInstance
+import returns.ReturnValue.Companion.createInstance
 import kotlin.reflect.KFunction
 import kotlin.reflect.KType
 import kotlin.reflect.KTypeProjection

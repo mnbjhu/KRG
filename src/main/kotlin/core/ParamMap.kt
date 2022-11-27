@@ -1,6 +1,11 @@
 package core
 
-import returns.*
+import returns.Entity
+import returns.Node
+import returns.Relation
+import returns.ReturnValue
+import returns.ReturnValue.Companion.createDummy
+import returns.ReturnValue.Companion.createInstance
 import kotlin.reflect.KFunction
 import kotlin.reflect.KProperty
 import kotlin.reflect.KType

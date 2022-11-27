@@ -1,7 +1,7 @@
 package core
 
 import returns.Relation
-import returns.createReference
+import returns.ReturnValue.Companion.createReference
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 
