@@ -38,7 +38,7 @@ jobs:
         arguments: test
     - name: JUnit Report Action
       # You may pin to the exact commit or the version.
-      # uses: mikepenz/action-junit-report@6e9933f4a97f4d2b99acef4d7b97924466037882
-      uses: mikepenz/action-junit-report@v3.6.1
+      uses: mikepenz/action-junit-report@v3
+      if: always() # always run even if the previous step fails
       with:
         report_paths: build/test-results/test/*.xml
