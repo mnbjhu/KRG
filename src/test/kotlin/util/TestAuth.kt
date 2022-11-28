@@ -10,7 +10,7 @@ object TestAuth {
     private val server_port = Key("server.port", intType)
     private val server_host = Key("server.host", stringType)
     private val server_pass = Key("server.pass", stringType)
-    val host = try{ config?.get(server_host) } catch (e: Exception) { "localhost" }
-    val port = try{ config?.get(server_port) } catch (e: Exception) { 6379 }
+    val host = try{ config?.get(server_host)!! } catch (e: Exception) { "localhost" }
+    val port = try{ config?.get(server_port)!! } catch (e: Exception) { 6379 }
     val password = try{ config?.get(server_pass) } catch (e: Exception) { null }
 }
