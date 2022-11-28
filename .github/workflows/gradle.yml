@@ -35,9 +35,10 @@ jobs:
       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
       with:
         arguments: test
-    - name: JUnit Report Action
-      # You may pin to the exact commit or the version.
-      uses: mikepenz/action-junit-report@v3
-      if: always() # always run even if the previous step fails
+    - name: Test Report
+      uses: dorny/test-reporter@v1.6.0
+      if: success() || failure()    # run this step even if previous step failed
       with:
-        report_paths: build/test-results/test/*.xml
+        name: JUnit Tests            # Name of the check run which will be created
+        path: build/test-results/test/*.xml    # Path to test results
+        reporter: java-junit        # Format of test results
