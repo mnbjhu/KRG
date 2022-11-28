@@ -22,6 +22,8 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: redis/redis-stack:latest
+      ports:
+        - 6379:6379
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 11
