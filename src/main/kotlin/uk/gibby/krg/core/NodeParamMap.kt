@@ -2,12 +2,15 @@ package uk.gibby.krg.core
 
 
 import uk.gibby.krg.paths.open.OpenPath2
+import uk.gibby.krg.returns.ReturnValue
 import uk.gibby.krg.returns.ReturnValue.Companion.createReference
 import uk.gibby.krg.returns.graph.entities.Node
 import uk.gibby.krg.returns.graph.entities.Relation
+import uk.gibby.krg.returns.graph.entities.UnitNode
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KType
+import kotlin.reflect.full.superclasses
 
 
 class NodeParamMap<U: Node<*>>(
@@ -16,8 +19,9 @@ class NodeParamMap<U: Node<*>>(
 ): ParamMap<U>(refType), Matchable<U>, Creatable<U> {
     override fun getSearchString(): String {
         val paramString = if(entries.isEmpty()) "" else "{${entries.joinToString { "${it.first}:${it.second.getString()}" }}}"
-        val className = (type.classifier as KClass<*>).simpleName
-        return "($ref:$className$paramString)"
+        val labels = listOf(type.classifier as KClass<*>) + (type.classifier as KClass<*>).superclasses
+            .takeWhile { it != Node::class && it != UnitNode::class }
+        return "($ref:${labels.joinToString(":"){ it.simpleName!! }}$paramString)"
     }
     operator fun <B: Relation<U, C, *>, C: Node<*>, T: RelationParamMap<B>>minus(relation: T): OpenPath2<U, B, C> {
         return OpenPath2(this, relation)
