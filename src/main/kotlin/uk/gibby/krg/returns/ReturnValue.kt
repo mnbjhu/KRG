@@ -45,7 +45,7 @@ abstract class ReturnValue<T>{
      *
      * @throws Exception If the ReturnValue is a parser only
      */
-    fun getString() = when(type){
+    internal fun getString() = when(type){
         is ReturnValueType.ParserOnly -> throw Exception("Cannot call getString, instance is parser only")
         is ReturnValueType.Reference -> (type as ReturnValueType.Reference).ref
         is ReturnValueType.Instance -> getStructuredString()
@@ -62,7 +62,7 @@ abstract class ReturnValue<T>{
      *
      * @return The structured representation of the instance
      */
-    abstract fun getStructuredString(): String
+    internal abstract fun getStructuredString(): String
 
     /**
      * Parse
@@ -72,7 +72,7 @@ abstract class ReturnValue<T>{
      * @param value Response data
      * @return The decoded response
      */
-    abstract fun parse(value: Any?): T
+    internal abstract fun parse(value: Any?): T
 
     /**
      * Encode
@@ -82,17 +82,17 @@ abstract class ReturnValue<T>{
      * @param value The value to encode
      * @return Structured representation of [value]
      */
-    abstract fun encode(value: T): ReturnValue<T>
+    internal abstract fun encode(value: T): ReturnValue<T>
     companion object{
         private val dummyCache = mutableMapOf<String, Any>()
-        fun <T, U: ReturnValue<T>, A: ArrayReturn<T, U>>createDummyArray(type: KType): Any{
+        internal fun <T, U: ReturnValue<T>, A: ArrayReturn<T, U>>createDummyArray(type: KType): Any{
             return (ArrayReturn<T, U>(Box.WithoutValue, type) as U)
                 .apply { this.type = ReturnValueType.ParserOnly }
         }
-        fun <T, U: ReturnValue<T>, A: ArrayReturn<T, U>>createReferenceArray(type: KType, ref: String): Any{
+        internal fun <T, U: ReturnValue<T>, A: ArrayReturn<T, U>>createReferenceArray(type: KType, ref: String): Any{
             return ArrayReturn<T, U>(Box.WithoutValue, type).apply { this.type = ReturnValueType.Reference(ref) }
         }
-        fun createDummy(type: KType): Any{
+        internal fun createDummy(type: KType): Any{
             val cached = dummyCache[type.toString()]
             if(cached != null) return cached
             return when{
@@ -130,7 +130,7 @@ abstract class ReturnValue<T>{
                 else -> throw Exception("Couldn't create dummy for type: $type")
             }.also { dummyCache[type.toString()] = it }
         }
-        fun createReference(type: KType, ref: String): Any{
+        internal fun createReference(type: KType, ref: String): Any{
             return when{
                 type.isSubtypeOf(ArrayReturn::class.createType(listOf(KTypeProjection.STAR, KTypeProjection.STAR))) -> {
                     createReferenceArray<Any, ReturnValue<Any>, ArrayReturn<Any, ReturnValue<Any>>>(type.arguments[1].type!!, ref)
@@ -168,20 +168,20 @@ abstract class ReturnValue<T>{
             }
         }
 
-        fun <T, U: ReturnValue<T>>createDummy(type: KFunction<U>): U{
+        internal fun <T, U: ReturnValue<T>>createDummy(type: KFunction<U>): U{
             val cached = dummyCache[type.toString()]
             return if(cached == null){
                 (createDummy(type.returnType) as U).also { dummyCache[type.toString()] = it }
             } else (cached as U)
         }
-        fun <T, U: ReturnValue<T>>createReference(type: KFunction<U>, ref: String): U{
+        internal fun <T, U: ReturnValue<T>>createReference(type: KFunction<U>, ref: String): U{
             return createReference(type.returnType, ref) as U
         }
-        fun <T, U: ReturnValue<T>>createInstance(type: KFunction<U>, value: T): U{
+        internal fun <T, U: ReturnValue<T>>createInstance(type: KFunction<U>, value: T): U{
             val dummy = createDummy(type)
             return dummy.encode(value) as U
         }
-        fun <T, U: ReturnValue<T>>createInstance(type: KType, value: T): U{
+        internal fun <T, U: ReturnValue<T>>createInstance(type: KType, value: T): U{
             val dummy = createDummy(type) as U
             return dummy.encode(value) as U
         }
