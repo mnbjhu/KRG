@@ -56,6 +56,7 @@ class Match(private vararg val matchable: Matchable<*>): Claus(){
          */
         inline fun <reified U : Node<*>> QueryScope.match(node: KFunction<U>) = match(node{})
 
+
         /**
          * Match
          *

@@ -21,7 +21,8 @@ class NodeParamMap<U: Node<*>>(
         val paramString = if(entries.isEmpty()) "" else "{${entries.joinToString { "${it.first}:${it.second.getString()}" }}}"
         val labels = listOf(type.classifier as KClass<*>) + (type.classifier as KClass<*>).superclasses
             .takeWhile { it != Node::class && it != UnitNode::class }
-        return "($ref:${labels.joinToString(":"){ it.simpleName!! }}$paramString)"
+            .map { it.qualifiedName!!.replace(".", "_") }
+        return "($ref:${labels.joinToString(":")}$paramString)"
     }
     operator fun <B: Relation<U, C, *>, C: Node<*>, T: RelationParamMap<B>>minus(relation: T): OpenPath2<U, B, C> {
         return OpenPath2(this, relation)

@@ -7,6 +7,7 @@ import uk.gibby.krg.returns.ReturnValue.Companion.createInstance
 import uk.gibby.krg.returns.graph.entities.Entity
 import uk.gibby.krg.returns.graph.entities.Node
 import uk.gibby.krg.returns.graph.entities.Relation
+import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KProperty
 import kotlin.reflect.KType
