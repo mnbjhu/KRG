@@ -46,10 +46,10 @@ class Graph(
         val result = scope.queryBuilder()
         val builtQuery = scope.getString()
         return if(result is EmptyReturn){
-            client.graphQuery(name, builtQuery)
+            client.graphQuery(name, builtQuery.also { println(it) })
             emptyList()
         } else {
-            val response = client.graphQuery(name, "$builtQuery RETURN ${result.getString()}")
+            val response = client.graphQuery(name, "$builtQuery RETURN ${result.getString()}".also { println(it) })
             response.map { result.parse(it.values().first()) }
         }
     }

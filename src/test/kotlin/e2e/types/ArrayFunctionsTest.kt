@@ -13,7 +13,7 @@ import uk.gibby.krg.returns.graph.entities.UnitNode
 import uk.gibby.krg.returns.primitives.StringReturn
 import util.GraphTest
 
-class Array: GraphTest() {
+class ArrayFunctionsTest: GraphTest() {
     class ArrayNode(val innerArray: ArrayReturn<String, StringReturn>): UnitNode()
     @Test
     fun createLiteral(){
