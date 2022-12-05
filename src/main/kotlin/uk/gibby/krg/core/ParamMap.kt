@@ -30,8 +30,8 @@ operator fun <U: Node<*>> KFunction<U>.invoke(nodeBuilder: U.(NodeParamMap<U>) -
     val dummy = createDummy(type) as U
     return with(dummy){ NodeParamMap<U>(type).also { nodeBuilder(it) } }
 }
-operator fun <U: Relation<*, *, *>> KFunction<U>.invoke(relationBuilder: U.(RelationParamMap<U>) -> Unit): RelationParamMap<U> {
+operator fun <U: Relation<*, *, *>> KFunction<U>.invoke(range: IntRange = 1..1, relationBuilder: U.(RelationParamMap<U>) -> Unit = {}): RelationParamMap<U> {
     val type = returnType
     val dummy = createDummy(type) as U
-    return with(dummy){ RelationParamMap<U>(type).also { relationBuilder(it) } }
+    return with(dummy){ RelationParamMap<U>(type, range).also { relationBuilder(it) } }
 }
