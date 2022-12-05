@@ -14,7 +14,7 @@ import kotlin.reflect.full.createType
 
 
 
-sealed class ParamMap<U: Entity<*>>(protected val type: KType){
+sealed class ParamMap<out U: Entity<*>>(protected val type: KType){
     val entries: MutableList<Pair<String, ReturnValue<*>>> = mutableListOf()
     operator fun <U: ReturnValue<*>>set(attribute: KProperty<U>, value: U){
         entries.add(attribute.name to value)

@@ -53,6 +53,28 @@ class Graph(
             response.map { result.parse(it.values().first()) }
         }
     }
+    fun <T, U: ReturnValue<T>>queryUnion(vararg queries: QueryScope.() -> U): List<T>{
+        var result: U? = null
+        val fullQuery = queries.joinToString(" UNION "){ queryBuilder ->
+            val scope = QueryScope()
+            result = scope.queryBuilder()
+            val builtQuery = scope.getString()
+            "$builtQuery RETURN ${result!!.getString()} AS r"
+        }
+        val response = client.graphQuery(name, fullQuery.also { println(it) })
+        return response.map { result!!.parse(it.values().first()) }
+    }
+    fun <T, U: ReturnValue<T>>queryUnionAll(vararg queries: QueryScope.() -> U): List<T>{
+        var result: U? = null
+        val fullQuery = queries.joinToString(" UNION ALL "){ queryBuilder ->
+            val scope = QueryScope()
+            result = scope.queryBuilder()
+            val builtQuery = scope.getString()
+            "$builtQuery RETURN ${result!!.getString()} AS r"
+        }
+        val response = client.graphQuery(name, fullQuery.also { println(it) })
+        return response.map { result!!.parse(it.values().first()) }
+    }
 
     /**
      * Delete
