@@ -5,7 +5,7 @@ import uk.gibby.krg.returns.graph.entities.Relation
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 
-class RelationParamMap<U: Relation<*, *, *>>(
+class RelationParamMap<out U: Relation<*, *, *>>(
     private val refType: KType,
     private val range: IntRange = 1..1,
     private val ref: String = NameCounter.next()

@@ -83,6 +83,7 @@ abstract class ReturnValue<T>{
      * @return Structured representation of [value]
      */
     abstract fun encode(value: T): ReturnValue<T>
+
     companion object{
         private val dummyCache = mutableMapOf<String, Any>()
         internal fun <T, U: ReturnValue<T>, A: ArrayReturn<T, U>>createDummyArray(type: KType): Any{

@@ -1,3 +1,3 @@
 package uk.gibby.krg.core
 
-interface Creatable<T>: Searchable<T>
+interface Creatable<out T>: Searchable<T>
