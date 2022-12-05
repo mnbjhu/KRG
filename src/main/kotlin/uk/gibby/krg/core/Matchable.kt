@@ -1,4 +1,4 @@
 package uk.gibby.krg.core
 
 
-interface Matchable<T>: Searchable<T>
+interface Matchable<out T>: Searchable<T>

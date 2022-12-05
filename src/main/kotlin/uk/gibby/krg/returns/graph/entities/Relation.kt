@@ -1,3 +1,3 @@
 package uk.gibby.krg.returns.graph.entities
 
-abstract class Relation<A: Node<*>, B: Node<*>, T>: Entity<T>()
+abstract class Relation<out A: Node<*>, out B: Node<*>, T>: Entity<T>()
